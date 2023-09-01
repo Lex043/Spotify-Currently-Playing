@@ -2,20 +2,13 @@ import spotify from "../assets/spotifyLogo-823bdaf2.svg";
 import { useEffect, useState } from "react";
 import getNowPlayingItem from "../SpotifyApi";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SpotifyNowPlaying = (props: any) => {
+const SpotifyNowPlaying = () => {
   const [loading, setLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>({});
 
   useEffect(() => {
-    Promise.all([
-      getNowPlayingItem(
-        props.client_id,
-        props.client_secret,
-        props.refresh_token
-      ),
-    ]).then((results) => {
+    Promise.all([getNowPlayingItem()]).then((results) => {
       setResult(results[0]);
       setLoading(false);
     });

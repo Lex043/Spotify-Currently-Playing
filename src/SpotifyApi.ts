@@ -5,13 +5,12 @@ const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 
 const NOW_PLAYING_ENDPOINT = `https://api.spotify.com/v1/me/player/currently-playing`;
 
-const client_id = import.meta.env.VITE_APP_SPOTIFY_CLIENT_ID;
-const client_secret = import.meta.env.VITE_APP_SPOTIFY_CLIENT_SECRET;
-const refresh_token = import.meta.env.VITE_APP_SPOTIFY_REFRESH_TOKEN;
-
-const getAccessToken = async () => {
-  // 'check note -- npm install buffer'
-  const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
+export const getAccessToken = async (): Promise<{ access_token: string }> => {
+  const basic = Buffer.from(
+    `${import.meta.env.VITE_APP_SPOTIFY_CLIENT_ID}:${
+      import.meta.env.VITE_APP_SPOTIFY_CLIENT_SECRET
+    }`
+  ).toString("base64");
   const response = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: {
@@ -20,22 +19,14 @@ const getAccessToken = async () => {
     },
     body: queryString.stringify({
       grant_type: "refresh_token",
-      refresh_token,
+      refresh_token: import.meta.env.VITE_APP_SPOTIFY_REFRESH_TOKEN,
     }),
   });
   return response.json();
 };
 
-export const getNowPlaying = async (
-  client_id: number,
-  client_secret: string,
-  refresh_token: string
-) => {
-  const { access_token } = await getAccessToken(
-    client_id,
-    client_secret,
-    refresh_token
-  );
+export const getNowPlaying = async (): Promise<Response> => {
+  const { access_token } = await getAccessToken();
   return fetch(NOW_PLAYING_ENDPOINT, {
     headers: {
       Authorization: `Bearer ${access_token}`,
@@ -74,12 +65,8 @@ interface NowPlayingData {
 }
 
 // return data
-export default async function getNowPlayingItem(
-  client_id: number,
-  client_secret: string,
-  refresh_token: string
-) {
-  const response = await getNowPlaying(client_id, client_secret, refresh_token);
+export default async function getNowPlayingItem() {
+  const response = await getNowPlaying();
   if (response.status === 204 || response.status > 400) {
     return false;
   }
