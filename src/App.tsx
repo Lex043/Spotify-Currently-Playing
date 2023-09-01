@@ -1,11 +1,10 @@
+import SpotifyNowPlaying from "./components/SpotifyNowPlaying";
+
 const App = () => {
   return (
-    <main>
-      <h1 className="text-3xl text-center">
-        Welcome to Lex043 vite + react + typescript + tailwindcss boilerplate.
-        Wagmi 🚀🚀
-      </h1>
-    </main>
+    <section className="flex flex-col items-center justify-center w-full h-screen bg-black">
+      <SpotifyNowPlaying />
+    </section>
   );
 };
 
